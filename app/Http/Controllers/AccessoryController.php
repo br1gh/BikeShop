@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Bike;
-use App\Models\BikeParameter;
+use App\Models\Accessory;
+use App\Models\AccessoryParameter;
 use App\Models\Parameter;
 use App\Vendor\Table;
 use Exception;
@@ -11,7 +11,7 @@ use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class BikeController extends Controller
+class AccessoryController extends Controller
 {
     private $validationRules = [
         'name' => 'required',
@@ -20,7 +20,7 @@ class BikeController extends Controller
 
     public function index()
     {
-        $table = new Table('bikes');
+        $table = new Table('accessories');
         return view('layouts.index.index', [
             'columns' => $table->columns,
             'tableName' => $table->tableName,
@@ -31,7 +31,7 @@ class BikeController extends Controller
 
     public function edit($id = 0)
     {
-        $obj = $id > 0 ? Bike::findOrFail($id) : new Bike();
+        $obj = $id > 0 ? Accessory::findOrFail($id) : new Accessory();
 
         $parameters = Parameter::select([
             'parameters.id',
@@ -45,11 +45,11 @@ class BikeController extends Controller
             'max',
             'step',
         ])
-            ->leftJoin('bike_parameters', function (JoinClause $join) use ($obj) {
-                $join->on('parameters.id', '=', 'bike_parameters.parameter_id');
-                $join->where('bike_parameters.bike_id', '=', $obj->id);
+            ->leftJoin('accessory_parameters', function (JoinClause $join) use ($obj) {
+                $join->on('parameters.id', '=', 'accessory_parameters.parameter_id');
+                $join->where('accessory_parameters.accessory_id', '=', $obj->id);
             })
-            ->where('for_bikes', '=', 1)
+            ->where('for_accessories', '=', 1)
             ->get();
 
         if (request()->isMethod('post')) {
@@ -69,9 +69,9 @@ class BikeController extends Controller
 
                 foreach ($postParameter as $valueType => $array) {
                     foreach ($array as $parameterId => $value) {
-                        BikeParameter::updateOrCreate(
+                        AccessoryParameter::updateOrCreate(
                             [
-                                'bike_id' => $obj->id,
+                                'accessory_id' => $obj->id,
                                 'parameter_id' => $parameterId,
                             ],
                             [
@@ -85,16 +85,16 @@ class BikeController extends Controller
             } catch (Exception $exception) {
                 DB::rollBack();
                 return redirect()
-                    ->route('bikes.edit', ['id' => $obj->id])
+                    ->route('accessories.edit', ['id' => $obj->id])
                     ->with('danger', 'Something went wrong');
             }
             return redirect()
-                ->route('bikes.edit', ['id' => $obj->id])
-                ->with('success', 'Bike has been saved successfully');
+                ->route('accessories.edit', ['id' => $obj->id])
+                ->with('success', 'Accessory has been saved successfully');
         }
 
         return view('layouts.edit.edit', [
-            'title' => 'Bikes',
+            'title' => 'Accessories',
             'obj' => $obj,
             'parameters' => $parameters,
             'parameterTypes' => Parameter::getTypes(),
@@ -105,18 +105,18 @@ class BikeController extends Controller
     {
         DB::beginTransaction();
         try {
-            $obj = Bike::findOrFail($id);
+            $obj = Accessory::findOrFail($id);
             $obj->delete();
             DB::commit();
         } catch (Exception $exception) {
             DB::rollBack();
 
             return redirect()
-                ->route('bikes.index')
+                ->route('accessories.index')
                 ->with('danger', 'Something went wrong');
         }
         return redirect()
-            ->route('bikes.index')
-            ->with('success', 'Bike deleted successfully');
+            ->route('accessories.index')
+            ->with('success', 'Accessory deleted successfully');
     }
 }

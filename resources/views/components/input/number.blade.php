@@ -1,4 +1,5 @@
 @props([
+    'group' => 'form',
     'name' => null,
     'label' => null,
     'value' => null,
@@ -8,9 +9,10 @@
 ])
 
 <div class="form-group">
-    <label>{{$label}}</label>
+    <label for="{{$group}}_{{$name}}">{{$label}}</label>
     <input
-        name="form[{{$name}}]"
+        id="{{$group}}_{{$name}}"
+        name="{{$group}}[{{$name}}]"
         type="number"
         class="form-control @error($name) border-warning @enderror"
         value="{{$value}}"

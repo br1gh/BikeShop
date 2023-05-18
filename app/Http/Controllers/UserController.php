@@ -11,7 +11,7 @@ class UserController extends Controller
     public function index()
     {
         $table  = new Table('users');
-        return view('layouts.index', [
+        return view('layouts.index.index', [
             'columns' => $table->columns,
             'tableName' => $table->tableName,
             'title' => $table->title,
@@ -21,7 +21,7 @@ class UserController extends Controller
 
     public function edit($id = 0)
     {
-        $obj = $id > 0 ? User::find($id) : new User();
+        $obj = $id > 0 ? User::findOrFail($id) : new User();
 
         if (request()->isMethod('post')) {
             request()->validate([

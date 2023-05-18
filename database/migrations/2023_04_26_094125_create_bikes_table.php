@@ -16,8 +16,9 @@ class CreateBikesTable extends Migration
         Schema::create('bikes', function (Blueprint $table) {
             $table->id();
             $table->string("name");
-            $table->decimal("price", 8, 2);
+            $table->decimal("price");
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

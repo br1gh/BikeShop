@@ -13,7 +13,7 @@
         <tbody>
         @if (sizeof($items->items()) == 0)
             <tr>
-                <td colspan="{{sizeof($table->headers)}}" class="text-center">
+                <td colspan="{{sizeof($table->headers) + 1}}" class="text-center">
                     No records found
                 </td>
             </tr>
@@ -25,15 +25,15 @@
                             {{ $item->{$field} }}
                         </td>
                     @endforeach
-                        <td class="td-actions text-right">
-                            <a href="{{route($table->tableName.'.edit', ['id' => $item->id])}}"
-                               class="btn btn-success btn-sm btn-icon">
-                                <i class="tim-icons icon-settings"></i>
-                            </a>
-                            <a href="{{route($table->tableName.'.delete', ['id' => $item->id])}}"
-                               class="btn btn-danger btn-sm btn-icon">
-                                <i class="tim-icons icon-simple-remove"></i>
-                            </a>
+                    <td class="td-actions text-right">
+                        <a href="{{route($table->tableName.'.edit', ['id' => $item->id])}}"
+                           class="btn btn-primary btn-sm btn-icon">
+                            <i class="tim-icons icon-settings"></i>
+                        </a>
+                        <a href="{{route($table->tableName.'.delete', ['id' => $item->id])}}"
+                           class="btn btn-danger btn-sm btn-icon">
+                            <i class="tim-icons icon-simple-remove"></i>
+                        </a>
                     </td>
             </tr>
             @endforeach

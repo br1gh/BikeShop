@@ -17,11 +17,22 @@ class Table
                 'price' => 'Price',
             ],
         ],
+        'parts' => [
+            'columns' => [
+                'name' => 'Name',
+                'price' => 'Price',
+            ],
+        ],
+        'accessories' => [
+            'columns' => [
+                'name' => 'Name',
+                'price' => 'Price',
+            ],
+        ],
         'parameters' => [
             'columns' => [
                 "type" => "Type",
                 "name" => "Name",
-                "value" => "Value",
                 "unit" => "Unit",
             ],
         ],

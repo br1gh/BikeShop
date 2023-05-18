@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Bike;
-use App\Models\BikeParameter;
 use App\Models\Parameter;
+use App\Models\Part;
+use App\Models\PartParameter;
 use App\Vendor\Table;
 use Exception;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class BikeController extends Controller
+class PartController extends Controller
 {
     private $validationRules = [
         'name' => 'required',
@@ -20,7 +20,7 @@ class BikeController extends Controller
 
     public function index()
     {
-        $table = new Table('bikes');
+        $table = new Table('parts');
         return view('layouts.index.index', [
             'columns' => $table->columns,
             'tableName' => $table->tableName,
@@ -31,7 +31,7 @@ class BikeController extends Controller
 
     public function edit($id = 0)
     {
-        $obj = $id > 0 ? Bike::findOrFail($id) : new Bike();
+        $obj = $id > 0 ? Part::findOrFail($id) : new Part();
 
         $parameters = Parameter::select([
             'parameters.id',
@@ -45,11 +45,11 @@ class BikeController extends Controller
             'max',
             'step',
         ])
-            ->leftJoin('bike_parameters', function (JoinClause $join) use ($obj) {
-                $join->on('parameters.id', '=', 'bike_parameters.parameter_id');
-                $join->where('bike_parameters.bike_id', '=', $obj->id);
+            ->leftJoin('part_parameters', function (JoinClause $join) use ($obj) {
+                $join->on('parameters.id', '=', 'part_parameters.parameter_id');
+                $join->where('part_parameters.part_id', '=', $obj->id);
             })
-            ->where('for_bikes', '=', 1)
+            ->where('for_parts', '=', 1)
             ->get();
 
         if (request()->isMethod('post')) {
@@ -69,9 +69,9 @@ class BikeController extends Controller
 
                 foreach ($postParameter as $valueType => $array) {
                     foreach ($array as $parameterId => $value) {
-                        BikeParameter::updateOrCreate(
+                        PartParameter::updateOrCreate(
                             [
-                                'bike_id' => $obj->id,
+                                'part_id' => $obj->id,
                                 'parameter_id' => $parameterId,
                             ],
                             [
@@ -85,16 +85,16 @@ class BikeController extends Controller
             } catch (Exception $exception) {
                 DB::rollBack();
                 return redirect()
-                    ->route('bikes.edit', ['id' => $obj->id])
+                    ->route('parts.edit', ['id' => $obj->id])
                     ->with('danger', 'Something went wrong');
             }
             return redirect()
-                ->route('bikes.edit', ['id' => $obj->id])
-                ->with('success', 'Bike has been saved successfully');
+                ->route('parts.edit', ['id' => $obj->id])
+                ->with('success', 'Part has been saved successfully');
         }
 
         return view('layouts.edit.edit', [
-            'title' => 'Bikes',
+            'title' => 'Parts',
             'obj' => $obj,
             'parameters' => $parameters,
             'parameterTypes' => Parameter::getTypes(),
@@ -105,18 +105,18 @@ class BikeController extends Controller
     {
         DB::beginTransaction();
         try {
-            $obj = Bike::findOrFail($id);
+            $obj = Part::findOrFail($id);
             $obj->delete();
             DB::commit();
         } catch (Exception $exception) {
             DB::rollBack();
 
             return redirect()
-                ->route('bikes.index')
+                ->route('parts.index')
                 ->with('danger', 'Something went wrong');
         }
         return redirect()
-            ->route('bikes.index')
-            ->with('success', 'Bike deleted successfully');
+            ->route('parts.index')
+            ->with('success', 'Part deleted successfully');
     }
 }
