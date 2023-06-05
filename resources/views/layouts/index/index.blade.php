@@ -1,4 +1,4 @@
-@extends('layouts.app2')
+@extends('layouts.app')
 
 @section('content')
     @if(isset($filters))
@@ -26,14 +26,15 @@
                                             title="All"
                                             multiple
                                         >
-                                    @else
-                                        <select id="filter_{{$name}}" class="form-control selectpicker" data-type="{{$type}}">
-                                        <option value="" selected>All</option>
-                                    @endif
-                                        @foreach($options as $key => $value)
-                                            <option value="{{$key}}">{{$value}}</option>
-                                        @endforeach
-                                    </select>
+                                            @else
+                                                <select id="filter_{{$name}}" class="form-control selectpicker"
+                                                        data-type="{{$type}}">
+                                                    <option value="" selected>All</option>
+                                                    @endif
+                                                    @foreach($options as $key => $value)
+                                                        <option value="{{$key}}">{{$value}}</option>
+                                                    @endforeach
+                                                </select>
                                 </div>
                             </div>
                         @endforeach
@@ -93,8 +94,8 @@
     </div>
     <div class="card table-card">
         <div class="row">
-            <div class="col-4"></div>
-            <div class="col-4">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
                 <ul class="pagination card-body justify-content-center">
                     <li class="page-item">
                         <a href="#" id="first-page" class="first-last-button btn" data-page="1"><<</a>
@@ -114,7 +115,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="col-4">
+            <div class="col-md-4">
                 <ul class="pagination card-body pull-right">
                     <li class="page-item">
                         <a href="{{route($tableName.'.edit')}}" class="btn btn-primary">New</a>

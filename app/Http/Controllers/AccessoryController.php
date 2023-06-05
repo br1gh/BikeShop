@@ -33,7 +33,7 @@ class AccessoryController extends Controller
     {
         $obj = $id > 0 ? Accessory::findOrFail($id) : new Accessory();
 
-        $parameters = Parameter::select([
+        $parametersGroupChunk = Parameter::select([
             'parameters.id',
             'type',
             'name',
@@ -50,7 +50,11 @@ class AccessoryController extends Controller
                 $join->where('accessory_parameters.accessory_id', '=', $obj->id);
             })
             ->where('for_accessories', '=', 1)
-            ->get();
+            ->where('type', '<>', 'part')
+            ->orderBy('name')
+            ->get()
+            ->groupBy('type')
+            ->chunk(4);
 
         if (request()->isMethod('post')) {
             $post = request()->get('form', []);
@@ -96,7 +100,7 @@ class AccessoryController extends Controller
         return view('layouts.edit.edit', [
             'title' => 'Accessories',
             'obj' => $obj,
-            'parameters' => $parameters,
+            'parametersGroupChunk' => $parametersGroupChunk,
             'parameterTypes' => Parameter::getTypes(),
         ]);
     }

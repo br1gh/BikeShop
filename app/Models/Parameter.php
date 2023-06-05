@@ -23,6 +23,7 @@ class Parameter extends Model
             'text' => 'Text',
             'text with unit' => 'Text with unit',
             'checkbox' => 'Checkbox',
+            'part' => 'Part',
         ];
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Bike;
 use App\Models\BikeParameter;
 use App\Models\Parameter;
+use App\Models\Part;
 use App\Vendor\Table;
 use Exception;
 use Illuminate\Database\Query\JoinClause;
@@ -33,7 +34,7 @@ class BikeController extends Controller
     {
         $obj = $id > 0 ? Bike::findOrFail($id) : new Bike();
 
-        $parameters = Parameter::select([
+        $parametersGroupChunk = Parameter::select([
             'parameters.id',
             'type',
             'name',
@@ -50,7 +51,12 @@ class BikeController extends Controller
                 $join->where('bike_parameters.bike_id', '=', $obj->id);
             })
             ->where('for_bikes', '=', 1)
-            ->get();
+            ->orderBy('name')
+            ->get()
+            ->groupBy('type')
+            ->chunk(4);
+
+        $parts = Part::orderBy('name')->pluck('name', 'id');
 
         if (request()->isMethod('post')) {
             $post = request()->get('form', []);
@@ -58,6 +64,7 @@ class BikeController extends Controller
                 'integer' => request()->get('form_parameter_integer', []),
                 'float' => request()->get('form_parameter_float', []),
                 'string' => request()->get('form_parameter_string', []),
+                'select' => request()->get('form_parameter_select', []),
             ];
 
             Validator::make($post, $this->validationRules)->validate();
@@ -75,7 +82,7 @@ class BikeController extends Controller
                                 'parameter_id' => $parameterId,
                             ],
                             [
-                                'value_' . $valueType => $value
+                                'value_' . ($valueType == 'select' ? 'integer' : $valueType) => $value
                             ]
                         );
                     }
@@ -96,8 +103,9 @@ class BikeController extends Controller
         return view('layouts.edit.edit', [
             'title' => 'Bikes',
             'obj' => $obj,
-            'parameters' => $parameters,
+            'parametersGroupChunk' => $parametersGroupChunk,
             'parameterTypes' => Parameter::getTypes(),
+            'parts' => $parts,
         ]);
     }
 

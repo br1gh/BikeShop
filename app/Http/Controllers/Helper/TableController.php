@@ -23,6 +23,9 @@ class TableController extends Controller
         $page = min($page, intval(ceil($db->count() / $limit)));
         $db->select(array_merge(['id'], $table->fieldNames));
 
+        if ($tableName == 'users') {
+            $db->where('id', '<>', 1);
+        }
 
         if ($filter) {
             foreach ($filter['multiselect'] ?? [] as $field => $value) {

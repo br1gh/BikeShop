@@ -14,7 +14,7 @@
         id="{{$group}}_{{$name}}"
         name="{{$group}}[{{$name}}]"
         type="number"
-        class="form-control @error($name) border-warning @enderror"
+        class="form-control @error($name) is-invalid @enderror"
         value="{{$value}}"
         min="{{$min}}"
         max="{{$max}}"
@@ -22,5 +22,5 @@
     >
 </div>
 @error($name)
-<div class="alert alert-danger">{{ $message }}</div>
+<div class="invalid-feedback d-block" role="alert">{{ $message }}</div>
 @enderror

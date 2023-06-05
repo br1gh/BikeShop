@@ -33,7 +33,7 @@ class PartController extends Controller
     {
         $obj = $id > 0 ? Part::findOrFail($id) : new Part();
 
-        $parameters = Parameter::select([
+        $parametersGroupChunk = Parameter::select([
             'parameters.id',
             'type',
             'name',
@@ -50,7 +50,11 @@ class PartController extends Controller
                 $join->where('part_parameters.part_id', '=', $obj->id);
             })
             ->where('for_parts', '=', 1)
-            ->get();
+            ->where('type', '<>', 'part')
+            ->orderBy('name')
+            ->get()
+            ->groupBy('type')
+            ->chunk(4);
 
         if (request()->isMethod('post')) {
             $post = request()->get('form', []);
@@ -96,7 +100,7 @@ class PartController extends Controller
         return view('layouts.edit.edit', [
             'title' => 'Parts',
             'obj' => $obj,
-            'parameters' => $parameters,
+            'parametersGroupChunk' => $parametersGroupChunk,
             'parameterTypes' => Parameter::getTypes(),
         ]);
     }

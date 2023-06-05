@@ -1,4 +1,4 @@
-@extends('layouts.app2')
+@extends('layouts.app')
 
 @section('content')
     <div class="container">
@@ -7,10 +7,11 @@
                 @csrf
                 <div class="card card-login">
                     <div class="card-header">
-                        <img src="{{asset('img/bikes-login.jpg')}}" alt="">
+                        <img draggable="false" src="{{asset('img/bike-login.jpg')}}" alt="">
                     </div>
                     <div class="card-body">
-                        <div class="input-group">
+                        <div class="form-group">
+                            <label for="email">Email</label>
                             <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
                                    name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
 
@@ -22,7 +23,8 @@
                             </span>
                             @enderror
                         </div>
-                        <div class="input-group">
+                        <div class="form-group">
+                            <label for="password">Password</label>
                             <input id="password" type="password"
                                    class="form-control @error('password') is-invalid @enderror" name="password" required
                                    autocomplete="current-password">
@@ -40,17 +42,6 @@
                         <button type="submit" href="" class="btn btn-primary btn-lg btn-block mb-3">
                             Log in
                         </button>
-                        <div class="pull-left">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="remember"
-                                       id="remember" {{ old('remember') ? 'checked' : '' }}>
-
-                                <label class="form-check-label" for="remember">
-                                    {{ __('Remember Me') }}
-                                </label>
-                            </div>
-                        </div>
-
                         <div class="pull-right">
                             <div class="col-md-8 offset-md-4">
                                 @if (Route::has('password.request'))

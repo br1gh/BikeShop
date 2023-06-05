@@ -17,22 +17,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('layouts.app2');
-})->name('aaa');
-
 Auth::routes();
 
 Route::middleware('auth')->group(function () {
-    Route::get('/home', [HomeController::class, 'index'])->name('home');
-
-    Route::name('users.')
-        ->prefix('users')
-        ->group(function () {
-            Route::get('/', [UserController::class, 'index'])->name('index');
-            Route::match(['get', 'post'], '/edit/{id?}', [UserController::class, 'edit'])->name('edit');
-            Route::get('/delete/{id}', [UserController::class, 'delete'])->name('delete');
-        });
+    Route::get('/', function () {
+        return view('layouts.app');
+    });
 
     Route::name('bikes.')
         ->prefix('bikes')
@@ -68,3 +58,14 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/table/fetch/{tableName}', [TableController::class, 'fetch'])->name('table.fetch');
 });
+
+Route::middleware('auth.superadmin')
+    ->group(function () {
+        Route::name('users.')
+            ->prefix('users')
+            ->group(function () {
+                Route::get('/', [UserController::class, 'index'])->name('index');
+                Route::match(['get', 'post'], '/edit/{id?}', [UserController::class, 'edit'])->name('edit');
+                Route::get('/delete/{id}', [UserController::class, 'delete'])->name('delete');
+            });
+    });
