@@ -67,9 +67,9 @@ class ParameterController extends Controller
 
     public function delete($id)
     {
+        $obj = Parameter::findOrFail($id);
         DB::beginTransaction();
         try {
-            $obj = Parameter::findOrFail($id);
             $obj->delete();
             DB::commit();
         } catch (Exception $exception) {

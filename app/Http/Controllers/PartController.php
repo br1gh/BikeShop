@@ -107,9 +107,9 @@ class PartController extends Controller
 
     public function delete($id)
     {
+        $obj = Part::findOrFail($id);
         DB::beginTransaction();
         try {
-            $obj = Part::findOrFail($id);
             $obj->delete();
             DB::commit();
         } catch (Exception $exception) {

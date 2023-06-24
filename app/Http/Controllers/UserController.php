@@ -37,8 +37,8 @@ class UserController extends Controller
 
             Validator::make($post, [
                 'name' => 'required|string|max:255',
-                'password' => 'same:confirm_password|string|min:8',
-                'confirm_password' => 'same:password|string|min:8',
+                'password' => 'same:confirm_password|nullable|string|min:8',
+                'confirm_password' => 'same:password|nullable|string|min:8',
                 'email' => 'required|email|max:255|unique:users,email,' . $obj->getKey() . ',id',
             ])->validate();
 
@@ -78,9 +78,9 @@ class UserController extends Controller
                 ->route('users.index');
         }
 
+        $obj = User::findOrFail($id);
         DB::beginTransaction();
         try {
-            $obj = User::findOrFail($id);
             $obj->delete();
             DB::commit();
         } catch (Exception $exception) {

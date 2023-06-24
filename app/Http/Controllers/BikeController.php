@@ -111,9 +111,9 @@ class BikeController extends Controller
 
     public function delete($id)
     {
+        $obj = Bike::findOrFail($id);
         DB::beginTransaction();
         try {
-            $obj = Bike::findOrFail($id);
             $obj->delete();
             DB::commit();
         } catch (Exception $exception) {

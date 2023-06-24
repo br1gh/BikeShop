@@ -107,9 +107,9 @@ class AccessoryController extends Controller
 
     public function delete($id)
     {
+        $obj = Accessory::findOrFail($id);
         DB::beginTransaction();
         try {
-            $obj = Accessory::findOrFail($id);
             $obj->delete();
             DB::commit();
         } catch (Exception $exception) {
